@@ -3,41 +3,14 @@ const {type} = require('os')
 const path=require('path')
 const app=express()
 const uuid=require('uuid')
-// const middleware=(req,res,next)=>{
-//     console.log("hii this is middle ware");
-//     next()
-// }
-// app.use(middleware)
-// app.get("/",middleware,(req,res)=>{
-//     res.send("Hii this is Get request")
-// })
-// app.post("/",(req,res)=>{
-//     res.send("HI this is the Post Request")
-// })
-// app.put("/",(req,res)=>{
-//     res.send("Hii this is put request")
-// })
-// app.delete("/",(req,res)=>{
-//     res.send("HI this is the Delete Request")
-// })
-const members=[{
-    id:1,
-    name:'SHIVAM',
-    email:'shivam@gmail',
-    status:'active'
-},{
-    id:2,
-    name:'Mayank',
-    email:'Mayank@gmail',
-    status:'inactive' 
-},{
-    id:3,
-    name:'Dubey',
-    email:'dubey@gmail',
-    status:'active' 
-}
-]
+const members=require('./members')
 app.use(express.json())
+
+
+
+
+
+
 app.get("/showalluser",(req,res)=>{
     res.status(200).json(members)
 })
@@ -70,6 +43,36 @@ app.delete('/deleteuser/:id',(req,res)=>{
     }
     
     
+})
+// update user
+app.put('/updateUser/:id',(req,res)=>{
+    console.log("HELLO");
+   const found=members.some(member=>member.id===parseInt(req.params.id))
+//     // user found
+    if(found)
+    {
+        const updmember=req.body
+        members.forEach(member=>{
+            if(member.id===parseInt(req.params.id))
+            {
+                member.name=updmember.name
+                member.email=updmember.email
+               
+                
+            }
+        })
+
+
+    }
+    
+    // not found
+    else{
+        res.status(400).json({msg:`No member found with id ${req.params.id}`})
+    
+    }
+    res.status(200).json(members)
+    
+
 })
 const PORT=process.env.PORT||3000
 app.listen(PORT,()=>console.log(`server  is running at ${PORT}`)) 
