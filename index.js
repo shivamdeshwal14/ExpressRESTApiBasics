@@ -1,5 +1,5 @@
 const express=require('express')
-const { type } = require('os')
+const {type} = require('os')
 const path=require('path')
 const app=express()
 const uuid=require('uuid')
@@ -56,9 +56,20 @@ app.post('/adduser',(req,res)=>{
     // const{name,email,status}=req.body
    members.push({id:uuid.v4(),name,email,status})
    res.status(200).json(members)
-
-
-
+})
+app.delete('/deleteuser/:id',(req,res)=>{
+    const id=parseInt(req.params.id)
+    const found=members.some(member=>member.id===id)
+    if(found)
+    {
+          const result=members.filter(member=>member.id!==id)
+          res.status(200).json(result) 
+    }
+    else{
+       res.status(400).json({msg:`No member found with id ${id}`} ) 
+    }
+    
+    
 })
 const PORT=process.env.PORT||3000
 app.listen(PORT,()=>console.log(`server  is running at ${PORT}`)) 
